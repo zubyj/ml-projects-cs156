@@ -7,46 +7,75 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
-# Importing the dataset
+# Importing the dataset & splicing. 
 dataset = pd.read_csv('Data-hw1.csv')
 print(dataset)
-x = dataset.iloc[: , [0, 1, 3]].values
-y = dataset.iloc[: , 3:4].values
+x = dataset.iloc[: , :3].values
+y = dataset.iloc[: , 3:].values
 
-# Replace missing data with mean value. 
-imputer = SimpleImputer(missing_values = np.nan, strategy='mean')
+# Replace missing data with mean value.
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
 imputer.fit(x[: , 1:])
 x[: , 1:] = imputer.transform(x[: , 1:])
-y = y.reshape(-1, 1)
 imputer.fit(y)
 y = imputer.transform(y)
+print(x, y)
 
-# Convert from non-numeric/categorical to numeric data
-ct = ColumnTransformer(transformers=[('encoder' , OneHotEncoder() , [0])], remainder = 'passthrough')
+# Convert categorical (non-numeric) data
+ct = ColumnTransformer(transformers=[('encoder' , OneHotEncoder(), [0])], remainder = 'passthrough')
 x = np.array(ct.fit_transform(x))
+print(x)
+print(y)
 
-# Split into test & training set
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2, random_state = 1)
+# Split into training & test set
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2, random_state=1)
 
-# Train Simple Linear Regression model on training set. 
-# Experience vs Salary
-yrs_exp_train = x_train[: , 2:3]
-print(yrs_exp_train)
+# Train using Simple Linear Regression Model
+# Salary vs Experience
+exp_train = x_train[: , 4:]
+print(exp_train)
 regressor = LinearRegression()
-regressor.fit(yrs_exp_train, y_train)
+regressor.fit(exp_train, y_train)
+salary_train_pred = regressor.predict(exp_train)
 
-# Visualizing training set results.
-# plt.scatter(yrs_exp_train, y_train, color='red') 
-# plt.plot(yrs_exp_train, regressor.predict(yrs_exp_train), color='blue')
-# plt.show()
+# Visualize training set results
+plt.scatter(exp_train, y_train, color='red')
+plt.plot(exp_train, salary_train_pred, color='blue')
+plt.title('Salary vs Experience (training set)')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.show()
 
-# Comparing test set results to actual results. 
-y_pred = regressor.predict(x_test[: , 2:3])
-# print('Expected')
-# print(y_test)
-# print('Actual')
-# print(y_pred)
+# Predicting test set results
+exp_test = x_test[: , 4:]
+salary_test_pred = regressor.predict(exp_test)
+print('Salary (actual)')
+print(y_test)
+print('Salary (predicted)')
+print(salary_test_pred)
 
-# Given years of experience, predict salary.
-print(regressor.predict([[3.1]]))
-print(regressor.predict([[7]]))
+# Visualize test set results
+plt.scatter(exp_test, y_test, color='red')
+plt.plot(exp_test, salary_test_pred, color='blue')
+plt.title('Salary vs Experience (test set)')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.show()
+
+# Given years of experience, predict salary
+exp1 = 3.1
+exp2 = 7.1
+
+pred_1 = regressor.predict([[exp1]])
+pred_2 = regressor.predict([[exp2]])
+print(str(exp1) + ' Years Experience' + str(pred_1))
+print(str(exp2) + ' Years Experience' + str(pred_2))
+
+# Plot new data points
+plt.plot(exp_train, salary_train_pred, color='blue')
+plt.scatter(3.1, pred_1, color='black')
+plt.scatter(7, pred_2, color='black')
+plt.title('Predicting Salary from 3.1 and 7 Yrs Experience')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.show()
