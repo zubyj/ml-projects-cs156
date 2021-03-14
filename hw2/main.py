@@ -15,7 +15,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics._regression import mean_squared_error
 from numpy.lib.scimath import sqrt
-from test_set import test_set
+from test_set import house_test_set
 
 # Read dataset of houses & use house price as predictive output (dependent variable)
 # Every other housing quality is an indepedent variable. 
@@ -30,28 +30,43 @@ x = np.array(ct.fit_transform(x))
 # Transform year built to age of building 
 x[: , -1] = 2021 - x[: , -1]
 
+# Divide into training & test set
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2, random_state=1)
+
 # Simple Linear Regression Model
 #
-# Train using sqft_living as independent variable
-# Divide into training & test set
-sqft_living = x[: , 17:18]
-x_train, x_test, y_train, y_test = train_test_split(sqft_living, y, test_size=.2, random_state=1)
 regressor = LinearRegression()
-regressor.fit(x_train, y_train)
-y_pred = regressor.predict(x_test)
-# Show root mean squared value (R squared)
-rms = sqrt(mean_squared_error(y_test, y_pred))
-print("RMS " + str(rms))
-# Plot linear regression for training data
-plt.scatter(x_train, y_train, color='red')
-plt.plot(x_train, regressor.predict(x_train), color='blue')
-plt.show()
-# Plot linear regression for test data
-plt.scatter(x_test, y_test, color='red')
-plt.plot(x_test, y_pred, color='blue')
-plt.show()
+# Train using sqft_living as independent variable
+sqft_living_train = x_train[: , 17:18]
+regressor.fit(sqft_living_train, y_train)
+r_square = regressor.score(sqft_living_train, y_train)
+print("R square : " + str(r_square))
+# Plot linear regression line for training set
+plt.scatter(sqft_living_train, y_train, color='red')
+plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
+plt.title('Salary vs Sqft_living (Training data)')
+plt.xlabel('Square ft living')
+plt.ylabel('Salary')
+# plt.show()
+# Plot linear regression line for test set
+sqft_living_test = x_test[: , 17:18]
+plt.scatter(sqft_living_test, y_test, color='red')
+plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
+plt.title('Salary vs Square ft living (Test data)')
+plt.xlabel('Square ft living')
+plt.ylabel('Salary')
+# plt.show()
 # Predict house prices for some test cases
-sqft_living_test = test_set[: , 2:3]
+sqft_living_test = np.array(house_test_set)[: , 7:8]
 for sqft_living in sqft_living_test:
-    print("SQFT LIVING : " + str(sqft_living))
-    print("PRED PRICE " + str(regressor.predict([sqft_living])))
+    print("Sq feet living " + str(sqft_living[0]))
+    pred_price = str(regressor.predict([sqft_living])[0])
+    print("Predicted cost : $" + pred_price) 
+    print()
+
+# Multiple Linear Regression Model
+#
+regressor.fit(x_train, y_train)
+r_square = regressor.score(x_train, y_train)
+print("R square : " + str(r_square))
+print(x)
