@@ -15,7 +15,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics._regression import mean_squared_error
 from numpy.lib.scimath import sqrt
-from test_set import house_test_set
+from test_set import houses_data
 
 # Read dataset of houses & use house price as predictive output (dependent variable)
 # Every other housing quality is an indepedent variable. 
@@ -47,7 +47,7 @@ plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
 plt.title('Salary vs Sqft_living (Training data)')
 plt.xlabel('Square ft living')
 plt.ylabel('Salary')
-# plt.show()
+plt.show()
 # Plot linear regression line for test set
 sqft_living_test = x_test[: , 17:18]
 plt.scatter(sqft_living_test, y_test, color='red')
@@ -55,9 +55,9 @@ plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
 plt.title('Salary vs Square ft living (Test data)')
 plt.xlabel('Square ft living')
 plt.ylabel('Salary')
-# plt.show()
+plt.show()
 # Predict house prices for some test cases
-sqft_living_test = np.array(house_test_set)[: , 7:8]
+sqft_living_test = np.array(houses_data)[: , 23:24]
 for sqft_living in sqft_living_test:
     print("Sq feet living " + str(sqft_living[0]))
     pred_price = str(regressor.predict([sqft_living])[0])
@@ -69,4 +69,11 @@ for sqft_living in sqft_living_test:
 regressor.fit(x_train, y_train)
 r_square = regressor.score(x_train, y_train)
 print("R square : " + str(r_square))
-print(x)
+# print(r_square)
+for house in houses_data:
+    print("Given house features")
+    print(house)
+    print("Predicted salary is " + str(regressor.predict([house])))
+    print()
+
+# Decision Tree Regerssion Model
