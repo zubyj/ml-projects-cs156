@@ -16,6 +16,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics._regression import mean_squared_error
 from numpy.lib.scimath import sqrt
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 # Read dataset of houses & use house price as predictive output (dependent variable)
 # Every other housing quality is an indepedent variable. 
@@ -44,17 +45,17 @@ print('Simple Linear Regression (R square) : ' + str(r_square))
 # Plot linear regression line for training set
 plt.scatter(sqft_living_train, y_train, color='red')
 plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
-plt.title('Salary vs Sqft_living (Training data)')
+plt.title('House Price vs Sqft_living (Training data)')
 plt.xlabel('Square ft living')
-plt.ylabel('Salary')
+plt.ylabel('House Price')
 plt.show()
 # Plot linear regression line for test set
 sqft_living_test = x_test[: , 17:18]
 plt.scatter(sqft_living_test, y_test, color='red')
 plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
-plt.title('Salary vs Square ft living (Test data)')
+plt.title('House Price vs Square ft living (Test data)')
 plt.xlabel('Square ft living')
-plt.ylabel('Salary')
+plt.ylabel('House Price')
 plt.show()
 # Predict house prices for some test cases
 sqft_living_test = np.array(houses_data)[: , 23:24]
@@ -64,23 +65,28 @@ for sqft_living in sqft_living_test:
     print('Predicted cost : $' + pred_price) 
     print()
 
-def print_results():
+def print_house_price_preds():
+    print('R Square : ' + str(regressor.score(x_train, y_train)))
     for house in houses_data:
         print('Given features : ' + str(house))
-        print('Predicted Salary ' + str(regressor.predict([house])))
-        print('R Square : ' + str(regressor.score(x_train, y_train)))
+        print('Predicted House Price ' + str(regressor.predict([house])))
+    print()
 
 # Multiple Linear Regression Model
-#
+print("Multiple Linear Regression")
 regressor.fit(x_train, y_train)
-print_results()
+print_house_price_preds()
+print("Coefficients " + regressor.coef_)
+print("Intercepts : " + regressor.intercept_)
 
 # Decision Tree Regression Model
-#
+print("Decision Tree Regression")
 regressor = DecisionTreeRegressor(random_state=0)
 regressor.fit(x_train, y_train)
-print_results()
+print_house_price_preds()
 
 # Random Forest Regression
-#
-
+print("Random Forest Regression")
+regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
+regressor.fit(x, y)
+print_house_price_preds()
