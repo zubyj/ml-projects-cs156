@@ -5,17 +5,17 @@
 #   4. Random Forest Regression
 #
 
+from test_set import houses_data
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-
+from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics._regression import mean_squared_error
 from numpy.lib.scimath import sqrt
-from test_set import houses_data
+from sklearn.tree import DecisionTreeRegressor
 
 # Read dataset of houses & use house price as predictive output (dependent variable)
 # Every other housing quality is an indepedent variable. 
@@ -40,7 +40,7 @@ regressor = LinearRegression()
 sqft_living_train = x_train[: , 17:18]
 regressor.fit(sqft_living_train, y_train)
 r_square = regressor.score(sqft_living_train, y_train)
-print("R square : " + str(r_square))
+print('Simple Linear Regression (R square) : ' + str(r_square))
 # Plot linear regression line for training set
 plt.scatter(sqft_living_train, y_train, color='red')
 plt.plot(sqft_living_train, regressor.predict(sqft_living_train), color='blue')
@@ -59,21 +59,28 @@ plt.show()
 # Predict house prices for some test cases
 sqft_living_test = np.array(houses_data)[: , 23:24]
 for sqft_living in sqft_living_test:
-    print("Sq feet living " + str(sqft_living[0]))
+    print('Sq feet living ' + str(sqft_living[0]))
     pred_price = str(regressor.predict([sqft_living])[0])
-    print("Predicted cost : $" + pred_price) 
+    print('Predicted cost : $' + pred_price) 
     print()
+
+def print_results():
+    for house in houses_data:
+        print('Given features : ' + str(house))
+        print('Predicted Salary ' + str(regressor.predict([house])))
+        print('R Square : ' + str(regressor.score(x_train, y_train)))
 
 # Multiple Linear Regression Model
 #
 regressor.fit(x_train, y_train)
-r_square = regressor.score(x_train, y_train)
-print("R square : " + str(r_square))
-# print(r_square)
-for house in houses_data:
-    print("Given house features")
-    print(house)
-    print("Predicted salary is " + str(regressor.predict([house])))
-    print()
+print_results()
 
-# Decision Tree Regerssion Model
+# Decision Tree Regression Model
+#
+regressor = DecisionTreeRegressor(random_state=0)
+regressor.fit(x_train, y_train)
+print_results()
+
+# Random Forest Regression
+#
+

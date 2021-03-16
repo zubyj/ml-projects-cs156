@@ -1,3 +1,6 @@
+# Predict employee's salary given certain features. 
+# Using Reflex based Model  (Simple Linear Regression) 
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -19,13 +22,10 @@ imputer.fit(x[: , 1:])
 x[: , 1:] = imputer.transform(x[: , 1:])
 imputer.fit(y)
 y = imputer.transform(y)
-print(x, y)
 
 # Convert categorical (non-numeric) data
 ct = ColumnTransformer(transformers=[('encoder' , OneHotEncoder(), [0])], remainder = 'passthrough')
 x = np.array(ct.fit_transform(x))
-print(x)
-print(y)
 
 # Split into training & test set
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2, random_state=1)
@@ -33,7 +33,6 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2, random_s
 # Train using Simple Linear Regression Model
 # Salary vs Experience
 exp_train = x_train[: , 4:]
-print(exp_train)
 regressor = LinearRegression()
 regressor.fit(exp_train, y_train)
 salary_train_pred = regressor.predict(exp_train)
@@ -62,16 +61,15 @@ plt.xlabel('Years of Experience')
 plt.ylabel('Salary')
 plt.show()
 
-# Given years of experience, predict salary
+# Predicting salary given years of experience. 
 exp1 = 3.1
 exp2 = 7.1
-
 pred_1 = regressor.predict([[exp1]])
 pred_2 = regressor.predict([[exp2]])
-print(str(exp1) + ' Years Experience' + str(pred_1))
-print(str(exp2) + ' Years Experience' + str(pred_2))
+print(str(exp1) + ' Years Experience pays ' + str(pred_1))
+print(str(exp2) + ' Years Experience pays' + str(pred_2))
 
-# Plot new data points
+# Visualize results for predicted salaries. 
 plt.plot(exp_train, salary_train_pred, color='blue')
 plt.scatter(3.1, pred_1, color='black')
 plt.scatter(7, pred_2, color='black')
