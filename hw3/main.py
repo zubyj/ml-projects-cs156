@@ -63,11 +63,10 @@ def print_results(y_pred, y_test):
             print('The passenger will survive')
     cm = confusion_matrix(y_test, y_pred)
     acc_score = accuracy_score(y_test, y_pred)
-    print('Confusion Matrix ' +  str(cm))
-    print('Accuracy Score ' + str(acc_score))
+    print('\nConfusion Matrix ' +  str(cm))
+    print('\nAccuracy Score ' + str(acc_score))
 
 # Logistic Regression
-print()
 print('\nLOGISTIC REGRESSION')
 from sklearn.linear_model import LogisticRegression
 regressor = LogisticRegression()
@@ -93,9 +92,15 @@ y_pred = classifier.predict(x_test)
 print_results(y_pred, y_test)
 
 # Kernel SVM
-print()
 print('\nKERNEL SVM')
 classifier = SVC(kernel = 'rbf', random_state = 0)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print_results(y_pred, y_test)
+
+# Naive Bayes 
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
 print_results(y_pred, y_test)
