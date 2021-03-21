@@ -35,47 +35,67 @@ imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
 imputer.fit(x[: , 2:3])
 x[: , 2:3] = imputer.transform(x[: , 2:3])  
 
+
 # Split into training set (75%) and test set (25%)
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.25, random_state=1)
 
-def print_results(y_pred, y_test):
-    cm = confusion_matrix(y_test, y_pred)
-    acc_score = accuracy_score(y_test, y_pred)
-    print("Confusion Matrix " +  str(cm))
-    print("Accuracy Score " + str(acc_score))
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+x_train = sc.fit_transform(x_train)
+x_test = sc.transform(x_test)
 
-    print("y actual : " + str(y_pred))
-    print("y expected " + str(y_test))
+# Printed results for each mode.
+# Prints actual vs expected results, confusion matrix, and accuracy score
+from sklearn.metrics import confusion_matrix, accuracy_score
+def print_results(y_pred, y_test):
+    print('y actual : ' + str(y_pred))
+    print('y expected ' + str(y_test))
 
     # Print results for data set
     for passenger in passengers[0]:
         print()
         print('Given features '  + str(passenger))
         if regressor.predict([passenger]) == 0:
-            print("The passenger will die")
+            print('The passenger will die')
         else:
-            print("The passenger will survive")
+            print('The passenger will survive')
+    cm = confusion_matrix(y_test, y_pred)
+    acc_score = accuracy_score(y_test, y_pred)
+    print('Confusion Matrix ' +  str(cm))
+    print('Accuracy Score ' + str(acc_score))
 
 # Logistic Regression
 print()
-print("LOGISTIC REGRESSION")
+print('\nLOGISTIC REGRESSION')
 from sklearn.linear_model import LogisticRegression
 regressor = LogisticRegression()
 regressor.fit(x_train, y_train)
-# Predicing test set results
 y_pred = regressor.predict(x_test)
-# Creating the confusion matrix for results.
-from sklearn.metrics import confusion_matrix, accuracy_score
-cm = confusion_matrix(y_test, y_pred)
-acc_score = accuracy_score(y_test, y_pred)
 print_results(y_pred, y_test)
 
 # K Nearest Neighbor Classification 
 print()
-print("K NEAREST NEIGHBOR CLASSIFICATION")
+print('\nK NEAREST NEIGHBOR CLASSIFICATION')
 from sklearn.neighbors import KNeighborsClassifier
 classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print_results(y_pred, y_test)
+
+# Support Vector Machine
+from sklearn.svm import SVC
+print('\nSUPPORT VECTOR MACHINES')
+classifier = SVC(kernel =  'linear', random_state = 1)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print_results(y_pred, y_test)
+
+# Kernel SVM
+print()
+print('\nKERNEL SVM')
+classifier = SVC(kernel = 'rbf', random_state = 0)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
 print_results(y_pred, y_test)
