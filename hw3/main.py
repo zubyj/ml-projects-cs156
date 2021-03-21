@@ -85,8 +85,8 @@ y_pred = classifier.predict(x_test)
 print_results(y_pred, y_test)
 
 # Support Vector Machine
-from sklearn.svm import SVC
 print('\nSUPPORT VECTOR MACHINES')
+from sklearn.svm import SVC
 classifier = SVC(kernel =  'linear', random_state = 1)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
@@ -116,3 +116,8 @@ print_results(y_pred, y_test)
 
 # Random Forest Classification
 print('\n RANDOM FOREST CLASSIFICATION')
+from sklearn.ensemble import RandomForestClassifier
+classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print_results(y_pred, y_test)
