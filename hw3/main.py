@@ -46,8 +46,9 @@ sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 
-# Printed results for each mode.
-# Prints actual vs expected results, confusion matrix, and accuracy score
+# For each classification algorithm below,
+#  prints actual vs expected results, confusion
+#  matrix, and accuracy score
 from sklearn.metrics import confusion_matrix, accuracy_score
 def print_results(y_pred, y_test):
     print('y actual : ' + str(y_pred))
@@ -104,3 +105,14 @@ classifier = GaussianNB()
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
 print_results(y_pred, y_test)
+
+# Decision Tree Classification
+print('\nDECISION TREE CLASSIFICATION')
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print_results(y_pred, y_test)
+
+# Random Forest Classification
+print('\n RANDOM FOREST CLASSIFICATION')
