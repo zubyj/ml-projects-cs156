@@ -34,27 +34,27 @@ from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
 imputer.fit(x[: , 2:3])
 x[: , 2:3] = imputer.transform(x[: , 2:3])  
-
+print(x)
 
 # Split into training set (75%) and test set (25%)
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.25, random_state=1)
 
-# Feature Scaling
-from sklearn.preprocessing import StandardScaler
-sc = StandardScaler()
-x_train = sc.fit_transform(x_train)
-x_test = sc.transform(x_test)
+# # Feature Scaling (not needed since values all below 100)
+# from sklearn.preprocessing import StandardScaler
+# sc = StandardScaler()
+# x_train = sc.fit_transform(x_train)
+# x_test = sc.transform(x_test)
+# print(x_train)
+# print(x_test)
 
-# For each classification algorithm below,
-#  prints actual vs expected results, confusion
-#  matrix, and accuracy score
+# For each classification algorithm below, prints
+# actual vs expected results, confusion matrix, & accuracy score.
 from sklearn.metrics import confusion_matrix, accuracy_score
-def print_results(y_pred, y_test):
+def print_results(y_test, y_pred):
     print('y actual : ' + str(y_pred))
     print('y expected ' + str(y_test))
-
-    # Print results for data set
+    # Given test set of passengers, predict if they live or die.
     for passenger in passengers[0]:
         print()
         print('Given features '  + str(passenger))
@@ -73,7 +73,7 @@ from sklearn.linear_model import LogisticRegression
 regressor = LogisticRegression()
 regressor.fit(x_train, y_train)
 y_pred = regressor.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # K Nearest Neighbor Classification 
 print()
@@ -82,29 +82,30 @@ from sklearn.neighbors import KNeighborsClassifier
 classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # Support Vector Machine
-print('\nSUPPORT VECTOR MACHINES')
+print('\nLINEAR SUPPORT VECTOR MACHINES')
 from sklearn.svm import SVC
 classifier = SVC(kernel =  'linear', random_state = 1)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # Kernel SVM
 print('\nKERNEL SVM')
 classifier = SVC(kernel = 'rbf', random_state = 0)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # Naive Bayes 
+print('\nNAIVE BAYES')
 from sklearn.naive_bayes import GaussianNB
 classifier = GaussianNB()
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # Decision Tree Classification
 print('\nDECISION TREE CLASSIFICATION')
@@ -112,7 +113,7 @@ from sklearn.tree import DecisionTreeClassifier
 classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
 
 # Random Forest Classification
 print('\n RANDOM FOREST CLASSIFICATION')
@@ -120,4 +121,37 @@ from sklearn.ensemble import RandomForestClassifier
 classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
 classifier.fit(x_train, y_train)
 y_pred = classifier.predict(x_test)
-print_results(y_pred, y_test)
+print_results(y_test, y_pred)
+
+'''
+Top 3 Models from the accuracy
+1. Logistical Regression  - 0.7982062780269058
+2. Linear Support Vector Machine - 0.7847533632286996
+3. Naive Bayes - 0.7847533632286996
+'''
+
+'''
+Additional Info
+
+model & scores with & without feature scaling
+
+no feature scaling
+log reg - 0.7982062780269058
+k nearest 0.7443946188340808
+svm -  0.7847533632286996
+kernel svm -  0.5695067264573991
+naive bayes - 0.7847533632286996
+decision tree - 0.7802690582959642
+random forest - 0.7443946188340808
+
+w/feature scaling
+log reg - 0.8026905829596412
+k nearest 0.7802690582959642
+svm -  0.7847533632286996
+kernel svm -  0.7847533632286996
+naive bayes - 0.7847533632286996
+decision tree - 0.7802690582959642
+random forest - 0.7399103139013453
+
+
+'''
